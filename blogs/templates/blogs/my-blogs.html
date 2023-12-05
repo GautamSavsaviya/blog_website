@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %} - My Blogs{% endblock %}
+
+{% block css %}
+<style>
+    .blog-list img {
+        width: 300px;
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+
+{% block body %}
+
+<div>
+    <input type="radio" class="form-check-input" onclick="javascript:window.location.href='?published=True'; return false;" />
+    <label class="form-check-label" for="flexRadioDefault1">
+        Published Blogs
+    </label>
+
+    <input type="radio" class="form-check-input" onclick="javascript:window.location.href='?published=False'; return false;" />
+    <label class="form-check-label" for="flexRadioDefault1">
+        Published Blogs
+      </label>
+
+    <input type="radio" class="form-check-input" onclick='javascript:window.location.href="{% url 'blogs:my_blogs' %}"; return false;' />
+    <label class="form-check-label" for="flexRadioDefault1">
+        All Blogs
+      </label>
+</div>
+<!-- All blogs -->
+<div class="mt-5">
+    {% for blog in blogs %}
+    <div class="d-flex p-3 my-2">
+        <div class="blog-list">
+            <img src="{{blog.image.url}}" alt="">
+        </div>
+        <div class="ms-5">
+            <h5>{{blog.title}}</h5>
+            <h6>{{blog.sub_title|slice:":50"}}...</h6>
+            <div class="d-flex my-3">
+                <p class="text-muted fw-semibold me-5"><small>Created at: {{blog.created_at}}</small></p>
+                <p class="text-muted fw-semibold">{% if blog.is_published %}<small
+                        class="text-success">Published</small>{% else %}<small class="text-danger">Not
+                        Published</small>{% endif %}</p>
+            </div>
+            <a href="{% url 'blogs:detail' blog.slug %}" class="btn btn-primary">Read More</a>
+            <a href="{% url 'blogs:update_blog' blog.slug %}" class="btn btn-secondary">Update Blog</a>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Delete Blog
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Are you  sure , you want to delete this blog?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="{% url 'blogs:delete_blog' blog.slug %}" class="btn btn-danger">Delete Blog</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="blog-pagination d-flex justify-content-center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if blogs.has_previous %}
+            <li class="page-item"><a href="?page=1" class="page-link">&laquo; first</a></li>
+            <li class="page-item"><a href="?page={{ blogs.previous_page_number }}" class="page-link">previous</a></li>
+            {% else %}
+            <li class="page-item"><a href="?page=" class="page-link disabled">&laquo; first</a></li>
+            <li class="page-item"><a href="?page=" class="page-link disabled">previous</a></li>
+            {% endif %}
+            {% for page_num in paginator.page_range %}
+            <li class="page-item"><a class="page-link" href="?page={{page_num}}">{{page_num}}</a></li>
+            {% endfor %}
+
+            {% if blogs.has_next %}
+            <li class="page-item"><a href="?page={{ blogs.next_page_number }}" class="page-link">next</a></li>
+            <li class="page-item"><a href="?page={{ blogs.paginator.num_pages }}" class="page-link">last &raquo;</a>
+            </li>
+            {% else %}
+            <li class="page-item"><a href="?page=" class="page-link disabled">next</a></li>
+            <li class="page-item"><a href="?page=" class="page-link disabled">last &raquo;</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}

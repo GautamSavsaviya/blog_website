@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %} - Detail{% endblock %}
+
+{% block css %}
+<style>
+    .blog-img img{
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+
+{% block body %}
+<div class="blog-detail w-75">
+    <div class="blog-title">
+        <h1>{{blog.title}}</h1>
+        <p class="fs-5 fw-light">{{blog.sub_title}}</p>
+        <div class="d-flex justify-content-between">
+            <p>{{blog.created_at}}</p>
+            <p class="me-3">{{blog.user.username}}</p>
+        </div>
+    </div>
+    <div class="blog-img">
+        <img src="{{blog.image.url}}" alt="">
+    </div>
+    <div class="blog-content mt-5">
+        <p>{{blog.description}}</p>
+    </div>
+</div>
+{% endblock %}
